@@ -1,6 +1,9 @@
 name: Build IMC Booklet PDF
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -31,9 +34,10 @@ jobs:
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: imc-booklet-${{ github.run_number }}
-          name: IMC Booklet build ${{ github.run_number }}
+          tag_name: imc-booklet
+          name: IMC Booklet build
           body: Automated build of imc-booklet.pdf from commit ${{ github.sha }}
           draft: false
           prerelease: true
+          make_latest: true
           files: imc-booklet.pdf
