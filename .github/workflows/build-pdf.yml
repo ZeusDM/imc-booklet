@@ -1,0 +1,47 @@
+name: Build IMC Booklet PDF
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build LaTeX document (LuaLaTeX)
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: imc-booklet.tex
+          latexmk_use_lualatex: true
+
+      - name: Ensure PDF was produced
+        run: test -s imc-booklet.pdf
+
+      - name: Upload artifact (PDF)
+        uses: actions/upload-artifact@v4
+        with:
+          name: imc-booklet-pdf
+          path: imc-booklet.pdf
+
+      - name: Create GitHub Release (draft prerelease)
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: imc-booklet-${{ github.run_number }}
+          release_name: IMC Booklet build #${{ github.run_number }}
+          body: Automated build of imc-booklet.pdf from commit ${{ github.sha }}
+          draft: false
+          prerelease: true
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: imc-booklet.pdf
+          asset_name: imc-booklet.pdf
+          asset_content_type: application/pdf
