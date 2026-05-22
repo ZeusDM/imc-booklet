@@ -1,0 +1,187 @@
+\documentclass[10pt,a4paper,twoside=false,parskip=half]{scrbook}
+\DeclareTOCStyleEntry[pagenumberwidth=2em]{chapter}{chapter}
+
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{luacode}
+\usepackage{amsmath,amssymb,amsthm}
+\numberwithin{equation}{section}
+\renewcommand\theequation{\arabic{equation}}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+\usepackage{xcolor}
+\usepackage{thmtools}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,filecolor=magenta!50!black,urlcolor=cyan!50!black}
+\usepackage[inline]{enumitem}
+\usepackage{multicol}
+
+\newcommand{\IMCLanguage}{en}
+
+\pagestyle{plain}
+\renewcommand*{\chapterpagestyle}{plain}
+
+\declaretheoremstyle[
+  spaceabove=1em plus 4em minus 1em,
+  spacebelow=1em plus 4em minus 1em,
+  bodyfont=\normalfont,
+  headfont=\bfseries,
+  notefont=\normalfont\bfseries,
+  headpunct=.,
+  notebraces={},
+]{customproblemstyle}
+
+\declaretheorem[
+  style=customproblemstyle,
+  name=Problem,
+  numbered=no,
+]{problem}
+
+\declaretheoremstyle[
+  bodyfont=\slshape,
+  headfont=\bfseries,
+  headpunct=.,
+]{remarkstyle}
+
+\declaretheorem[
+  style=remarkstyle,
+  name=Remark,
+  numbered=no,
+]{remark}
+
+\begin{luacode*}
+local lfs = require("lfs")
+local imc_language = "en"
+
+function file_exists(name)
+    local f = io.open(name, "r")
+    if f then
+        f:close()
+        return true
+    end
+    return false
+end
+
+local function tex_escape(text)
+    text = text:gsub("\\", "\\textbackslash{}")
+    text = text:gsub("([%%#$&{}_])", "\\%1")
+    text = text:gsub("%^", "\\textasciicircum{}")
+    text = text:gsub("~", "\\textasciitilde{}")
+    return text
+end
+
+local function first_existing(path, candidates)
+    for _, candidate in ipairs(candidates) do
+        local full_path = path .. candidate
+        if file_exists(full_path) then
+            return full_path
+        end
+    end
+    return nil
+end
+
+local function collect_years()
+    local years = {}
+
+    for entry in lfs.dir("problems") do
+        if entry:match("^%d%d%d%d$") then
+            years[#years + 1] = entry
+        end
+    end
+
+    table.sort(years, function(a, b)
+        return tonumber(a) > tonumber(b)
+    end)
+
+    return years
+end
+
+local function collect_problems(year)
+    local problems = {}
+
+    for entry in lfs.dir("problems/" .. year) do
+        if entry:match("^%d+$") then
+            problems[#problems + 1] = entry
+        end
+    end
+
+    table.sort(problems, function(a, b)
+        return tonumber(a) < tonumber(b)
+    end)
+
+    return problems
+end
+
+local function problem_dir(year, problem)
+    return "problems/" .. year .. "/" .. problem .. "/"
+end
+
+local function year_title(year)
+    return "IMC " .. year
+end
+
+local function problem_file(year, problem)
+    local path = problem_dir(year, problem)
+    return first_existing(path, {
+        "problem_" .. imc_language .. ".tex",
+        "problem_en.tex",
+        "problem_pt.tex",
+        "problem.tex",
+    })
+end
+
+local function problem_heading(year, problem)
+    return problem .. "/" .. year
+end
+
+function generate_problems_only()
+    for _, year in ipairs(collect_years()) do
+        tex.print("\\addchap{" .. tex_escape("IMC " .. year) .. "}")
+
+        for _, problem in ipairs(collect_problems(year)) do
+            local file = problem_file(year, problem)
+            if file then
+                tex.print("\\pagebreak[2]")
+                tex.print("\\par\\medskip\\noindent\\textbf{Problem " .. problem_heading(year, problem) .. ".}")
+                tex.print("\\label{problem:" .. year .. "-" .. problem .. "}")
+                tex.print("\\input{" .. file .. "}")
+                tex.print("\\par\\bigskip")
+            end
+        end
+    end
+end
+\end{luacode*}
+
+\directlua{imc_language = "\IMCLanguage"}
+
+\begin{document}
+
+\frontmatter
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{0.18\textheight}
+{\Huge\bfseries IMC Problem Booklet\par}
+\vspace{1.5em}
+{\large This booklet contains problems from the International Mathematics Competition for University Students.\par}
+\vspace{1.5em}
+{\large \url{https://www.imc-math.org.uk/}\par}
+\vfill
+{\small All problems belong to the International Mathematics Competition for University Students.\par}
+\end{titlepage}
+
+\cleardoublepage
+\chapter*{\contentsname}
+\thispagestyle{plain}
+\markboth{\contentsname}{\contentsname}
+\makeatletter
+\setlength{\columnsep}{1.25cm}
+\begin{multicols}{2}
+\@starttoc{toc}
+\end{multicols}
+\makeatother
+\mainmatter
+\directlua{generate_problems_only()}
+
+\end{document}
