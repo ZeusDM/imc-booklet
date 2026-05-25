@@ -12,32 +12,52 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - lang: en
+            root_file: imc-booklet-en.tex
+            pdf_name: imc-booklet-en.pdf
+            artifact_name: imc-booklet-en-pdf
+          - lang: pt
+            root_file: imc-booklet-pt.tex
+            pdf_name: imc-booklet-pt.pdf
+            artifact_name: imc-booklet-pt-pdf
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build LaTeX document (LuaLaTeX)
+      - name: Build LaTeX document (${{ matrix.lang }})
         uses: xu-cheng/latex-action@v4
         with:
-          root_file: imc-booklet.tex
+          root_file: ${{ matrix.root_file }}
           latexmk_use_lualatex: true
 
       - name: Ensure PDF was produced
-        run: test -s imc-booklet.pdf
+        run: test -s ${{ matrix.pdf_name }}
 
       - name: Upload artifact (PDF)
         uses: actions/upload-artifact@v4
         with:
-          name: imc-booklet-pdf
-          path: imc-booklet.pdf
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.pdf_name }}
 
-      - name: Create Release and Upload Asset
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2
         with:
           tag_name: imc-booklet
           name: IMC Booklet build
-          body: Automated build of imc-booklet.pdf from commit ${{ github.sha }}
+          body: Automated build of imc-booklet-en.pdf and imc-booklet-pt.pdf from commit ${{ github.sha }}
           draft: false
           prerelease: true
           make_latest: true
-          files: imc-booklet.pdf
+          files: release-assets/**/*.pdf

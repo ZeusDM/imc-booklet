@@ -1,7 +1,7 @@
 \documentclass[10pt,a4paper,twoside=false,parskip=half]{scrbook}
 \DeclareTOCStyleEntry[pagenumberwidth=2em]{chapter}{chapter}
 
-\usepackage[english]{babel}
+\usepackage[english,brazilian]{babel}
 \usepackage{lmodern}
 \usepackage{luacode}
 \usepackage{amsmath,amssymb,amsthm}
@@ -17,7 +17,12 @@
 \usepackage[inline]{enumitem}
 \usepackage{multicol}
 
-\newcommand{\IMCLanguage}{en}
+\providecommand{\IMCLanguage}{en}
+\providecommand{\IMCBabelLanguage}{english}
+\providecommand{\IMCBookletTitle}{IMC Problem Booklet}
+\providecommand{\IMCBookletDescription}{This booklet contains problems from the International Mathematics Competition for University Students.}
+\providecommand{\IMCBookletFooterNote}{All problems belong to the International Mathematics Competition for University Students.}
+\providecommand{\IMCProblemWord}{Problem}
 
 \pagestyle{plain}
 \renewcommand*{\chapterpagestyle}{plain}
@@ -52,7 +57,7 @@
 
 \begin{luacode*}
 local lfs = require("lfs")
-local imc_language = "en"
+imc_language = "en"
 
 function file_exists(name)
     local f = io.open(name, "r")
@@ -143,7 +148,7 @@ function generate_problems_only()
             local file = problem_file(year, problem)
             if file then
                 tex.print("\\pagebreak[2]")
-                tex.print("\\par\\medskip\\noindent\\textbf{Problem " .. problem_heading(year, problem) .. ".}")
+                tex.print("\\par\\medskip\\noindent\\textbf{\\IMCProblemWord\\ " .. problem_heading(year, problem) .. ".}")
                 tex.print("\\label{problem:" .. year .. "-" .. problem .. "}")
                 tex.print("\\input{" .. file .. "}")
                 tex.print("\\par\\bigskip")
@@ -153,35 +158,32 @@ function generate_problems_only()
 end
 \end{luacode*}
 
-\directlua{imc_language = "\IMCLanguage"}
+\directlua{imc_language = "\luaescapestring{\IMCLanguage}"}
 
-\begin{document}
-
+\newcommand{\IMCRenderBooklet}{%
+\selectlanguage{\IMCBabelLanguage}%
 \frontmatter
 \begin{titlepage}
 \thispagestyle{empty}
 \centering
 \vspace*{0.18\textheight}
-{\Huge\bfseries IMC Problem Booklet\par}
+{\Huge\bfseries \IMCBookletTitle\par}
 \vspace{1.5em}
-{\large This booklet contains problems from the International Mathematics Competition for University Students.\par}
+{\large \IMCBookletDescription\par}
 \vspace{1.5em}
 {\large \url{https://www.imc-math.org.uk/}\par}
 \vfill
-{\small All problems belong to the International Mathematics Competition for University Students.\par}
+{\small \IMCBookletFooterNote\par}
 \end{titlepage}
 
 \cleardoublepage
 \chapter*{\contentsname}
 \thispagestyle{plain}
 \markboth{\contentsname}{\contentsname}
-\makeatletter
 \setlength{\columnsep}{1.25cm}
 \begin{multicols}{2}
-\@starttoc{toc}
+\csname @starttoc\endcsname{toc}
 \end{multicols}
-\makeatother
 \mainmatter
 \directlua{generate_problems_only()}
-
-\end{document}
+}
