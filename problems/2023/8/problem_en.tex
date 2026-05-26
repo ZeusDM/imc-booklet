@@ -1,0 +1,10 @@
+Let \(T\) be a tree with \(n\) vertices; that is, a connected simple graph on \(n\) vertices that contains no cycle. For every pair \(u, v\) of vertices, let \(d(u,v)\) denote the distance between \(u\) and \(v\), that is, the number of edges in the shortest path in \(T\) that connects \(u\) with \(v\).
+
+Consider the sums
+\[
+W(T) = \sum_{\substack{\{u,v\} \subseteq V(T) \\ u \ne v}} d(u,v) \quad \text{and} \quad H(T) = \sum_{\substack{\{u,v\} \subseteq V(T) \\ u \ne v}} \frac{1}{d(u,v)}.
+\]
+Prove that
+\[
+W(T) \cdot H(T) \ge \frac{(n-1)^3(n+2)}{4}.
+\]

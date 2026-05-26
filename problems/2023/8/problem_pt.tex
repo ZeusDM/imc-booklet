@@ -1,0 +1,10 @@
+Seja \(T\) uma árvore com \(n\) vértices; isto é, um grafo simples conectado com \(n\) vértices que não contém ciclos. Para cada par \(u, v\) de vértices, seja \(d(u,v)\) a distância entre \(u\) e \(v\), ou seja, o número de arestas no caminho mais curto em \(T\) que conecta \(u\) a \(v\).
+
+Considere as somas
+\[
+W(T) = \sum_{\substack{\{u,v\} \subseteq V(T) \\ u \ne v}} d(u,v) \quad \text{e} \quad H(T) = \sum_{\substack{\{u,v\} \subseteq V(T) \\ u \ne v}} \frac{1}{d(u,v)}.
+\]
+Prove que
+\[
+W(T) \cdot H(T) \ge \frac{(n-1)^3(n+2)}{4}.
+\]

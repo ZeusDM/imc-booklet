@@ -1,0 +1,11 @@
+Uma matriz \(A = (a_{ij})\) é chamada de \emph{bonita}, se possui as seguintes propriedades:
+\begin{itemize}
+\item[(i)] o conjunto de todas as entradas de \(A\) é \(\{1, 2, \ldots, 2t\}\) para algum inteiro \(t\);
+\item[(ii)] as entradas são não decrescentes em cada linha e em cada coluna: \(a_{i,j} \le a_{i,j+1}\) e \(a_{i,j} \le a_{i+1,j}\);
+\item[(iii)] entradas iguais podem aparecer apenas na mesma linha ou na mesma coluna: se \(a_{i,j} = a_{k,\ell}\), então \(i = k\) ou \(j = \ell\);
+\item[(iv)] para cada \(s = 1, 2, \ldots, 2t-1\), existem \(i \ne k\) e \(j \ne \ell\) tais que \(a_{i,j} = s\) e \(a_{k,\ell} = s+1\).
+\end{itemize}
+
+Prove que para quaisquer inteiros positivos \(m\) e \(n\), o número de matrizes \(m \times n\) bonitas é par.
+
+Por exemplo, as únicas duas matrizes \(2 \times 3\) bonitas são \(\begin{pmatrix} 1 & 1 & 1 \\ 2 & 2 & 2 \end{pmatrix}\) e \(\begin{pmatrix} 1 & 1 & 3 \\ 2 & 4 & 4 \end{pmatrix}\).

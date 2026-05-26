@@ -1,0 +1,5 @@
+Para um inteiro positivo \(n\), seja \([n] = \{1, 2, \ldots, n\}\). Denote por \(S_n\) o conjunto de todas as bijeções de \([n]\) para \([n]\), e deixe \(T_n\) ser o conjunto de todos os mapeamentos de \([n]\) para \([n]\). Defina a \textit{ordem} \(\mathrm{ord}(\tau)\) de um mapeamento \(\tau \in T_n\) como o número de mapeamentos distintos no conjunto \(\{\tau, \tau \circ \tau, \tau \circ \tau \circ \tau, \ldots\}\), onde \(\circ\) denota a composição. Finalmente, seja
+\[
+f(n) = \max_{\tau \in S_n} \mathrm{ord}(\tau) \quad \text{e} \quad g(n) = \max_{\tau \in T_n} \mathrm{ord}(\tau).
+\]
+Prove que \(g(n) < f(n) + n^{0.501}\) para \(n\) suficientemente grande.

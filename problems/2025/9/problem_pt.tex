@@ -1,0 +1,9 @@
+Seja \(n\) um inteiro positivo. Considere o seguinte processo aleatório que produz uma sequência de \(n\) inteiros positivos distintos \(X_1, X_2, \ldots, X_n\).
+
+Primeiro, \(X_1\) é escolhido aleatoriamente com \(\mathbb{P}(X_1 = i) = 2^{-i}\) para todo inteiro positivo \(i\). Para \(1 \le j \le n-1\), tendo escolhido \(X_1, \ldots, X_j\), arranje os inteiros positivos restantes em ordem crescente como \(n_1 < n_2 < \cdots\), e escolha \(X_{j+1}\) aleatoriamente com \(\mathbb{P}(X_{j+1} = n_i) = 2^{-i}\) para todo inteiro positivo \(i\).
+
+Seja \(Y_n = \max\{X_1, \ldots, X_n\}\). Mostre que
+\[
+\mathbb{E}[Y_n] = \sum_{i=1}^{n} \frac{2^i}{2^i - 1}
+\]
+onde \(\mathbb{E}[Y_n]\) é o valor esperado de \(Y_n\).

@@ -1,0 +1,5 @@
+For a positive integer \(n\), let \([n] = \{1, 2, \ldots, n\}\). Denote by \(S_n\) the set of all bijections from \([n]\) to \([n]\), and let \(T_n\) be the set of all maps from \([n]\) to \([n]\). Define the \textit{order} \(\mathrm{ord}(\tau)\) of a map \(\tau \in T_n\) as the number of distinct maps in the set \(\{\tau, \tau \circ \tau, \tau \circ \tau \circ \tau, \ldots\}\) where \(\circ\) denotes composition. Finally, let
+\[
+f(n) = \max_{\tau \in S_n} \mathrm{ord}(\tau) \quad \text{and} \quad g(n) = \max_{\tau \in T_n} \mathrm{ord}(\tau).
+\]
+Prove that \(g(n) < f(n) + n^{0.501}\) for sufficiently large \(n\).
